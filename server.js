@@ -9,7 +9,7 @@ app.configure(function () {
 });
 
 app.get('/drinks', drink.findAll);
-app.get('/drinks/:id', drink.findById);
+app.get('/drinks/:id', drink.findByTeam);
 app.post('/drinks', drink.adddrink);
 app.put('/drinks/:id', drink.updatedrink);
 app.delete('/drinks/:id', drink.deletedrink);
