@@ -4,7 +4,7 @@ var Server = mongo.Server,
   Db = mongo.Db,
   BSON = mongo.BSONPure;
 
-var mongoUri = process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://localhost/mydb';
+var mongoUri = process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://127.0.0.1/mydb';
 
 mongo.MongoClient.connect(mongoUri, function(err, db){
   if(!err) {
@@ -58,7 +58,6 @@ exports.adddrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
 			var drink = req.body;
-			console.log('Adding drink: ' + drink);
 			db.collection('drinks', function (err, collection) {
 				collection.insert(drink, {safe: true}, function (err, result) {
 					console.log('my result at  adddrink : ' + result);
