@@ -58,13 +58,14 @@ exports.adddrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
 			var drink = req.body;
-			console.log('Adding drink: ' + JSON.stringify(drink));
+			console.log('Adding drink: ' + drink);
 			db.collection('drinks', function (err, collection) {
 				collection.insert(drink, {safe: true}, function (err, result) {
+					console.log('my result at  adddrink : ' + result);
 					if (err) {
 						res.send({'error': 'An error has occurred'});
 					} else {
-						console.log('Success: ' + JSON.stringify(result[0]));
+						console.log('Success at adddrink: ' + JSON.stringify(result[0]));
 						res.send(result[0]);
 					}
 				});
