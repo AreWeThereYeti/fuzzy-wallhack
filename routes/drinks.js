@@ -40,19 +40,18 @@ exports.findByTeam = function(req, res) {
 };
 
 exports.findAll = function(req, res) {
-	if(!err){
-		mongo.MongoClient.connect(mongoUri, function(err, db) {
+	mongo.MongoClient.connect(mongoUri, function(err, db) {
+		if(!err) {
 			db.collection('drinks', function (err, collection) {
 				collection.find().toArray(function (err, items) {
 					res.send(items);
 				});
 			});
-		});
-	}
-
-	else{
-		console.log("error in findAll : " + err);
-	}
+		}
+		else{
+			console.log("error in findAll : " + err);
+		}
+	});
 };
 
 exports.adddrink = function(req, res) {
