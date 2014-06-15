@@ -13,6 +13,7 @@ mongo.MongoClient.connect(mongoUri, function(err, db){
       if (err) {
         console.log("The 'drinks' collection doesn't exist. Creating it with sample data...");
         populateDB();
+	      db.close();
       }
     });
   }
@@ -28,8 +29,9 @@ exports.findByTeam = function(req, res) {
 			var team = req.params.team;
 			console.log('Retrieving team: ' + team);
 			db.collection('drinks', function (err, collection) {
-				collection.findOne({'_id': new BSON.ObjectID(id)}, function (err, item) {
+				collection.find({'_id': new BSON.ObjectID(id)}.limit(1), function (err, item) {
 					res.send(item);
+					db.close();
 				});
 			});
 		}
@@ -45,6 +47,7 @@ exports.findAll = function(req, res) {
 			db.collection('drinks', function (err, collection) {
 				collection.find().toArray(function (err, items) {
 					res.send(items);
+					db.close();
 				});
 			});
 		}
@@ -66,6 +69,7 @@ exports.adddrink = function(req, res) {
 					} else {
 						console.log('Success at adddrink: ' + JSON.stringify(result[0]));
 						res.send(result[0]);
+						db.close();
 					}
 				});
 			});
@@ -79,18 +83,18 @@ exports.adddrink = function(req, res) {
 exports.updatedrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
-			var id = req.params.id;
-			var drink = req.body;
-			console.log('Updating drink: ' + id);
-			console.log(JSON.stringify(drink));
+			var drinkdata = req.body;
+			console.log('Updating drink on team: ' + req.body.team);
+			console.log(JSON.stringify(drinkdata));
 			db.collection('drinks', function (err, collection) {
-				collection.update({'_id': new BSON.ObjectID(id)}, drink, {safe: true}, function (err, result) {
+				collection.update({'team': req.body.team}, drinkdata, {safe: true}, function (err, result) {
 					if (err) {
 						console.log('Error updating drink: ' + err);
 						res.send({'error': 'An error has occurred'});
 					} else {
 						console.log('' + result + ' document(s) updated');
-						res.send(drink);
+						res.send(drinkdata);
+						db.close();
 					}
 				});
 			});
@@ -113,6 +117,7 @@ exports.deletedrink = function(req, res) {
 					} else {
 						console.log('' + result + ' document(s) deleted');
 						res.send(req.body);
+						db.close();
 					}
 				});
 			});
@@ -146,6 +151,8 @@ var populateDB = function() {
 				collection.insert(drinks, {safe: true}, function (err, result) {
 				});
 			});
+
+			db.close();
 		}
 		else{
 			console.log("error in populateDB : " + err);
