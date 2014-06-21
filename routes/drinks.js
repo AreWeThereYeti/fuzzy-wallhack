@@ -17,7 +17,6 @@ mongo.MongoClient.connect(mongoUri, function(err, db){
       }
     });
   }
-
 	else{
 	  console.log("error connecting to mongo : " + err)
   }
@@ -57,35 +56,44 @@ exports.findAll = function(req, res) {
 	});
 };
 
+//http://stackoverflow.com/questions/22849527/mongodb-only-insert-if-value-is-unique-else-update-in-node-js
+
 exports.adddrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
 			var drink = req.body;
 			db.collection('drinks', function (err, collection) {
-				collection.insert(drink, {safe: true}, function (err, result) {
-					console.log('my result at  adddrink : ' + result);
-					if (err) {
-						res.send({'error': 'An error has occurred'});
-					} else {
-						console.log('Success at adddrink: ' + JSON.stringify(result[0]));
-						res.send(result[0]);
-						db.close();
-					}
+//				collection.insert(drink, {safe: true}, function (err, result) {
+				collection.update(
+						{ team: drink.team },
+						{
+							team: drink.team,
+							name: drink.name,
+						  drinks: drink.drinks
+						},
+						{ upsert: true },
+						function(err, result){
+							console.log('my result at  adddrink : ' + result);
+							if (err) {
+								res.send({'error': 'An error has occurred'});
+							} else {
+								res.send(result[0]);
+								db.close();
+							}
+						});
 				});
-			});
 		}
 		else{
 			console.log("error in adddrink : " + err);
 		}
 	});
-}
+};
 
 exports.updatedrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
 			var drinkdata = req.body;
 			console.log('Updating drink on team: ' + req.body.team);
-			console.log(JSON.stringify(drinkdata));
 			db.collection('drinks', function (err, collection) {
 				collection.update({'team': req.body.team}, drinkdata, {safe: true}, function (err, result) {
 					if (err) {
@@ -138,12 +146,18 @@ var populateDB = function() {
 				{
 					name: "Coke",
 					team: "Linkfire",
-					quantity: "3"
+					drinks: {
+						fanta : "2",
+						cola : "3"
+					}
 				},
 				{
 					name: "Egekilde",
 					team: "Rocket digital",
-					quantity: "3"
+					drinks: {
+						fanta : "20",
+						cola : "1"
+					}
 				}
 			];
 
