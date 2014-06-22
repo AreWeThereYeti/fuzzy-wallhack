@@ -56,26 +56,30 @@ exports.findAll = function(req, res) {
 	});
 };
 
-//http://stackoverflow.com/questions/22849527/mongodb-only-insert-if-value-is-unique-else-update-in-node-js
-
 exports.adddrink = function(req, res) {
 	mongo.MongoClient.connect(mongoUri, function(err, db) {
 		if(!err) {
 			var drink = req.body;
 			db.collection('drinks', function (err, collection) {
-//				collection.insert(drink, {safe: true}, function (err, result) {
 				collection.update(
 						{ team: drink.team },
 						{
-							team: drink.team,
-							name: drink.name,
-						  drinks: drink.drinks
+							$set: {
+								'team': drink.team,
+								'name': drink.name
+							},
+							$inc : {
+							"drinks.cola": drink.drinks.cola,
+							"drinks.fanta": drink.drinks.fanta,
+							"drinks.water": drink.drinks.water,
+							"drinks.beer": drink.drinks.beer
+						}
 						},
 						{ upsert: true },
 						function(err, result){
 							console.log('my result at  adddrink : ' + result);
 							if (err) {
-								res.send({'error': 'An error has occurred'});
+								res.send({'error': 'An error has occurred : ' + err});
 							} else {
 								res.send(result[0]);
 								db.close();
