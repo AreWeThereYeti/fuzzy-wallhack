@@ -33,7 +33,7 @@ flowet bliver så:
     post 'rocketFuelConsole' to /auth and store (localstorage/session/webSQL) response token
 
 2) use interceptor to add the request header:
-    Authorization: Bearer <token>
+    Authorization: Bearer "token"
 
 
 example angular interceptor
