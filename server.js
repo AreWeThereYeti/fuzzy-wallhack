@@ -1,12 +1,22 @@
 var express = require('express'),
-  drink = require('./routes/drinks');
+    expressJwt = require('express-jwt'),
+    drink = require('./routes/drinks'),
+    auth = require('./routes/auth');
+
+var secret = 'only-for-rocketeers';
 
 var app = express();
 
 app.configure(function () {
   app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
+
+  // protects the "/drinks" route
+  app.use('/drinks', expressJwt({secret: secret}));
+
   app.use(express.bodyParser());
 });
+
+app.post('/auth', auth.validateDevice);
 
 app.get('/drinks', drink.findAll);
 app.get('/drinks/:id', drink.findByTeam);
