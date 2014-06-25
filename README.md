@@ -13,12 +13,16 @@ har lavet en auth route som kan validere at app'en er the real deal.
 
 ---- 
 
-URL: /auth 
+URL: /auth
+
 Methods: POST, GET 
+
 Response: JSON
+
 ● (string) token
 
 Parameters: 
+
 ● authorization: 'rocketFuelConsole'
 
 ----
