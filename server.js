@@ -6,6 +6,7 @@ var express = require('express'),
 
 var secret = 'only-for-rocketeers';
 
+var app = express();
 
 app.configure(function () {
   app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
