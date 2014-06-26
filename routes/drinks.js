@@ -73,7 +73,7 @@ exports.adddrink = function(req, res) {
 							"drinks.fanta": drink.drinks.fanta,
 							"drinks.water": drink.drinks.water,
 							"drinks.beer": drink.drinks.beer
-						}
+							}
 						},
 						{ upsert: true },
 						function(err, result){
@@ -151,16 +151,16 @@ var populateDB = function() {
 					name: "Coke",
 					team: "Linkfire",
 					drinks: {
-						fanta : "2",
-						cola : "3"
+						fanta : 2,
+						cola : 3
 					}
 				},
 				{
 					name: "Egekilde",
 					team: "Rocket digital",
 					drinks: {
-						fanta : "20",
-						cola : "1"
+						fanta : 20,
+						cola : 1
 					}
 				}
 			];
