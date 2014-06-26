@@ -4,7 +4,7 @@ var Server = mongo.Server,
   Db = mongo.Db,
   BSON = mongo.BSONPure;
 
-var mongoUri = process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://127.0.0.1/mydb';
+var mongoUri = process.env.MONGOLAB_URI ||process.env.MONGOHQ_URL || 'mongodb://127.0.0.1/mydb' || 'mongodb://localhost:27017';
 
 mongo.MongoClient.connect(mongoUri, function(err, db){
   if(!err) {

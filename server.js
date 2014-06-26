@@ -1,27 +1,23 @@
 var express = require('express'),
+
+    expressJwt = require('express-jwt'),
     drink = require('./routes/drinks'),
-		jwt = require('express-jwt'),
-		app = express();
+    auth = require('./routes/auth');
+
+var secret = 'only-for-rocketeers';
 
 
 app.configure(function () {
   app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
+
+  // protects the "/drinks" route
+  app.use('/drinks', expressJwt({secret: secret}));
+
   app.use(express.bodyParser());
 });
 
 
-//https://www.npmjs.org/package/express-jwt
-
-app.get('/protected',
-		jwt({secret: 'shhhhhhared-secret'}),
-		function(req, res) {
-			if (!req.user.admin){
-				return res.send(401, {err: 'No Authorization header was found! Og din mor'})
-			}
-			else{
-				res.send(200);
-			}
-		});
+app.post('/auth', auth.validateDevice);
 
 app.get('/drinks', drink.findAll);
 app.get('/drinks/:id', drink.findByTeam);
