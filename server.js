@@ -17,6 +17,16 @@ app.configure(function () {
   app.use(express.bodyParser());
 });
 
+app.use(function(req, res, next) {
+  console.log('%s %s', req.method, req.url);
+
+  res.set('Access-Control-Allow-Credentials', 'true');
+  res.set('Access-Control-Allow-Origin', '*'); // or req.headers.origin
+  res.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.set('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Authorization');
+  res.set('Access-Control-Max-Age', '3600');
+  next();
+});
 
 app.post('/auth', auth.validateDevice);
 
